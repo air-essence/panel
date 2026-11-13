@@ -10,13 +10,18 @@ use App\Models\OrderStatus;
 use App\Models\SalesChannel;
 use App\Models\SyncRun;
 use App\Services\BaseLinker\OrderSync;
+use App\Services\Discrepancies\DiscrepancyFinder;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(DiscrepancyFinder $finder): View
     {
+        $discrepancies = $finder->find();
+
         return view('dashboard', [
+            'discrepancies' => $discrepancies->take(10),
+            'discrepancyCount' => $discrepancies->count(),
             'companies' => Company::count(),
             'channels' => SalesChannel::count(),
             'statuses' => OrderStatus::count(),

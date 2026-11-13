@@ -13,7 +13,8 @@ Koncepcja i plan MVP: dokument „Koncepcja narzędzia do śledzenia zamówień 
 - zmiany w słownikach tylko dla administratora, podgląd dla wszystkich,
 - synchronizacja z BaseLinkerem co 5 minut, tylko do odczytu: statusy, źródła zamówień, zamówienia z produktami (EAN), płatnością i numerem przesyłki,
 - lista zamówień z wyszukiwaniem i filtrami oraz karta zamówienia,
-- anulacje: wymagane pola (powód, data, co z przesyłką, zwrot pieniędzy z kwotą i datą), jedna otwarta anulacja na zamówienie, blokada zamknięcia przed zwrotem pieniędzy, historia zmian oraz ostrzeżenia, gdy sprawa nie zgadza się z danymi z BaseLinkera.
+- anulacje: wymagane pola (powód, data, co z przesyłką, zwrot pieniędzy z kwotą i datą), jedna otwarta anulacja na zamówienie, blokada zamknięcia przed zwrotem pieniędzy, historia zmian oraz ostrzeżenia, gdy sprawa nie zgadza się z danymi z BaseLinkera,
+- „Do wyjaśnienia”: rozbieżności między anulacjami w panelu a statusami w BaseLinkerze (anulowane z numerem przesyłki, zwrot pieniędzy przy zamówieniu w realizacji, anulacja tylko po jednej stronie). Rozbieżność można oznaczyć jako wyjaśnioną z obowiązkowym opisem.
 
 ## BaseLinker
 
@@ -60,4 +61,5 @@ Na serwerze firmowym zamiast SQLite można ustawić MySQL lub PostgreSQL w pliku
 
 ## Następne kroki (plan MVP)
 
-5. Reguły rozbieżności i pulpit „Do wyjaśnienia”.
+6. Powiadomienia w przeglądarce o nowych rozbieżnościach krytycznych.
+7. Instalacja na serwerze firmowym i kopie zapasowe.

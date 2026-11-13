@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DiscrepancyController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderStatusController;
 use App\Http\Controllers\SalesChannelController;
@@ -17,6 +18,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/wyloguj', [LoginController::class, 'logout'])->name('logout');
     Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('/do-wyjasnienia', [DiscrepancyController::class, 'index'])->name('discrepancies.index');
+    Route::post('/do-wyjasnienia/wyjasnione', [DiscrepancyController::class, 'dismiss'])->name('discrepancies.dismiss');
+    Route::delete('/do-wyjasnienia/wyjasnione/{dismissal}', [DiscrepancyController::class, 'restore'])->name('discrepancies.restore');
     Route::get('/zamowienia', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/zamowienia/{order}', [OrderController::class, 'show'])->name('orders.show');
 
