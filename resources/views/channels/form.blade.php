@@ -27,8 +27,18 @@
     @error('company_id')<div class="error">{{ $message }}</div>@enderror
 
     <label for="baselinker_source">Źródło w BaseLinkerze</label>
-    <input id="baselinker_source" type="text" name="baselinker_source" value="{{ old('baselinker_source', $channel->baselinker_source) }}">
-    <div class="muted">Uzupełnimy po podłączeniu API BaseLinkera.</div>
+    @if ($sources->isNotEmpty())
+        <select id="baselinker_source" name="baselinker_source">
+            <option value="">— nie przypisano —</option>
+            @foreach ($sources as $source)
+                <option value="{{ $source->key }}" @selected(old('baselinker_source', $channel->baselinker_source) === $source->key)>{{ $source->label() }}</option>
+            @endforeach
+        </select>
+        <div class="muted">Zamówienia z wybranego źródła trafią do tego kanału.</div>
+    @else
+        <input id="baselinker_source" type="text" name="baselinker_source" value="{{ old('baselinker_source', $channel->baselinker_source) }}">
+        <div class="muted">Lista źródeł pojawi się po pierwszej synchronizacji z BaseLinkerem.</div>
+    @endif
     @error('baselinker_source')<div class="error">{{ $message }}</div>@enderror
 
     <label style="font-weight:400"><input type="checkbox" name="is_active" value="1" @checked(old('is_active', $channel->is_active))> Kanał aktywny</label>

@@ -14,6 +14,14 @@ return [
     |
     */
 
+    // BaseLinker: panel tylko czyta dane (patrz App\Services\BaseLinker\Client).
+    'baselinker' => [
+        'token' => env('BASELINKER_TOKEN'),
+        'url' => env('BASELINKER_URL', 'https://api.baselinker.com/connector.php'),
+        // Ile dni wstecz odświeżać zamówienia przy każdej synchronizacji.
+        'sync_days' => (int) env('BASELINKER_SYNC_DAYS', 30),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
