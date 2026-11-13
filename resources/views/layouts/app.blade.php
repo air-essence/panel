@@ -22,7 +22,7 @@
         .btn-danger { color:var(--danger); }
         .btn-link { background:none; border:none; color:#fff; cursor:pointer; font:inherit; padding:0; }
         label { display:block; font-weight:600; margin:12px 0 4px; }
-        input[type=text], input[type=email], input[type=password], input[type=number], select { width:100%; max-width:420px; padding:7px 10px; border:1px solid var(--line); border-radius:6px; font:inherit; }
+        input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], select { width:100%; max-width:420px; padding:7px 10px; border:1px solid var(--line); border-radius:6px; font:inherit; }
         .error { color:var(--danger); font-size:13px; margin-top:4px; }
         .flash { background:#dafbe1; border:1px solid #aceebb; padding:10px 14px; border-radius:6px; margin-bottom:16px; }
         .muted { color:var(--muted); }
@@ -50,6 +50,7 @@
     <nav>
         <a href="{{ route('dashboard') }}">Pulpit</a>
         <a href="{{ route('orders.index') }}">Zamówienia</a>
+        <a href="{{ route('cancellations.index') }}">Anulacje</a>
         <a href="{{ route('companies.index') }}">Spółki</a>
         <a href="{{ route('channels.index') }}">Kanały sprzedaży</a>
         <a href="{{ route('statuses.index') }}">Statusy</a>

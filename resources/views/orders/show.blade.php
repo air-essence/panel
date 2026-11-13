@@ -20,6 +20,20 @@
         <dt>Pobrano z BaseLinkera</dt><dd>{{ $order->synced_at?->format('d.m.Y H:i') ?? '—' }}</dd>
     </dl>
 </div>
+<h2>Sprawy</h2>
+@php($openCancellation = $order->cases->first(fn ($c) => $c->type === \App\Models\OrderCase::TYPE_CANCELLATION && $c->status->isOpen()))
+@if (! $openCancellation)<p><a class="btn btn-primary" href="{{ route('cancellations.create', ['zamowienie' => $order->id]) }}">Zgłoś anulację</a></p>@endif
+<table>
+    <thead><tr><th>Nr</th><th>Typ</th><th>Status</th><th>Data</th></tr></thead>
+    <tbody>
+    @forelse ($order->cases as $case)
+        <tr><td><a href="{{ route('cancellations.show', $case) }}">{{ $case->id }}</a></td><td>Anulacja</td><td>{{ $case->status->label() }}</td><td>{{ $case->requested_on->format('d.m.Y') }}</td></tr>
+    @empty
+        <tr><td colspan="4" class="muted">Brak spraw do tego zamówienia.</td></tr>
+    @endforelse
+    </tbody>
+</table>
+
 <h2>Produkty</h2>
 <table>
     <thead><tr><th>Nazwa</th><th>SKU</th><th>EAN</th><th>Ilość</th><th>Cena brutto</th></tr></thead>
