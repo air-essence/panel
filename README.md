@@ -16,6 +16,7 @@ Koncepcja i plan MVP: dokument „Koncepcja narzędzia do śledzenia zamówień 
 - anulacje: wymagane pola (powód, data, co z przesyłką, zwrot pieniędzy z kwotą i datą), jedna otwarta anulacja na zamówienie, blokada zamknięcia przed zwrotem pieniędzy, historia zmian oraz ostrzeżenia, gdy sprawa nie zgadza się z danymi z BaseLinkera,
 - „Do wyjaśnienia”: rozbieżności między anulacjami w panelu a statusami w BaseLinkerze (anulowane z numerem przesyłki, zwrot pieniędzy przy zamówieniu w realizacji, anulacja tylko po jednej stronie). Rozbieżność można oznaczyć jako wyjaśnioną z obowiązkowym opisem,
 - zwroty (odstąpienia, zwroty częściowe, rabaty) zamiast arkuszy „Zwroty $$$”: spółka z kanału, stan i lokalizacja towaru, kwota, metoda i konto zwrotu, paragon/faktura i korekta/PZ, filtr po spółce, pilnowanie 14-dniowego terminu zwrotu pieniędzy, blokada zamknięcia bez kompletu danych, historia zmian i reguły w „Do wyjaśnienia”,
+- reklamacje zamiast arkuszy „Reklamacje Medivon / Air Essence / Beautifly” i „Serwis urządzeń”: produkt z zamówienia (EAN), opis wady, link do zdjęć, gdzie jest produkt (w tym serwis zewnętrzny z datami), odpowiedź dla klienta w 14 dni, rozstrzygnięcie z numerem WZ, historia zmian i reguły w „Do wyjaśnienia”,
 - powiadomienia: licznik rozbieżności w menu i w tytule karty (odświeżany co minutę) oraz powiadomienia systemowe o nowych rozbieżnościach krytycznych i błędach synchronizacji.
 
 ## Powiadomienia

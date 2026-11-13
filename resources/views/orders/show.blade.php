@@ -28,6 +28,7 @@
 <p class="row-actions">
     @if (! $openCancellation)<a class="btn btn-primary" href="{{ route('cancellations.create', ['zamowienie' => $order->id]) }}">Zgłoś anulację</a>@endif
     <a class="btn" href="{{ route('returns.create', ['zamowienie' => $order->id]) }}">Dodaj zwrot</a>
+    <a class="btn" href="{{ route('complaints.create', ['zamowienie' => $order->id]) }}">Dodaj reklamację</a>
 </p>
 <table>
     <thead><tr><th>Nr</th><th>Typ</th><th>Status</th><th>Data</th></tr></thead>
@@ -38,7 +39,10 @@
     @foreach ($order->returns as $return)
         <tr><td><a href="{{ route('returns.show', $return) }}">{{ $return->id }}</a></td><td>Zwrot · {{ $return->kind->label() }}</td><td>{{ $return->status->label() }}</td><td>{{ $return->requested_on->format('d.m.Y') }}</td></tr>
     @endforeach
-    @if ($order->cases->isEmpty() && $order->returns->isEmpty())
+    @foreach ($order->complaints as $complaint)
+        <tr><td><a href="{{ route('complaints.show', $complaint) }}">{{ $complaint->id }}</a></td><td>Reklamacja · {{ $complaint->product_name }}</td><td>{{ $complaint->status->label() }}</td><td>{{ $complaint->reported_on->format('d.m.Y') }}</td></tr>
+    @endforeach
+    @if ($order->cases->isEmpty() && $order->returns->isEmpty() && $order->complaints->isEmpty())
         <tr><td colspan="4" class="muted">Brak spraw do tego zamówienia.</td></tr>
     @endif
     </tbody>

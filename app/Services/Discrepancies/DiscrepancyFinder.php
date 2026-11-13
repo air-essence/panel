@@ -2,6 +2,7 @@
 
 namespace App\Services\Discrepancies;
 
+use App\Enums\ComplaintResolution;
 use App\Enums\GoodsStatus;
 use App\Enums\RefundStatus;
 use App\Enums\Severity;
@@ -10,6 +11,7 @@ use App\Enums\StatusGroup;
 use App\Models\DiscrepancyDismissal;
 use App\Models\Order;
 use App\Models\OrderCase;
+use App\Models\OrderComplaint;
 use App\Models\OrderReturn;
 use Illuminate\Support\Collection;
 
@@ -27,6 +29,10 @@ class DiscrepancyFinder
         'zwrot_po_terminie' => 'Minął termin zwrotu pieniędzy',
         'zwrot_wiekszy_niz_wplata' => 'Zwroty większe niż wpłata',
         'pieniadze_bez_towaru' => 'Pieniądze zwrócone, towar nie dotarł',
+        'reklamacja_bez_odpowiedzi' => 'Minął termin odpowiedzi na reklamację',
+        'reklamacja_dlugo_w_serwisie' => 'Produkt długo w serwisie',
+        'reklamacja_zwrot_bez_zwrotu' => 'Reklamacja: zwrot pieniędzy bez zwrotu w panelu',
+        'reklamacja_tylko_w_baselinkerze' => 'Reklamacja tylko w BaseLinkerze',
     ];
 
     /** Grupy statusów oznaczające, że zamówienie jest dalej realizowane. */
@@ -39,8 +45,8 @@ class DiscrepancyFinder
     {
         $days = (int) config('panel.discrepancy_days', 90);
 
-        $orders = Order::with(['status', 'salesChannel', 'cases' => fn ($q) => $q->cancellations(), 'returns'])
-            ->where(fn ($q) => $q->where('ordered_at', '>=', now()->subDays($days))->orWhereHas('cases')->orWhereHas('returns'))
+        $orders = Order::with(['status', 'salesChannel', 'cases' => fn ($q) => $q->cancellations(), 'returns', 'complaints'])
+            ->where(fn ($q) => $q->where('ordered_at', '>=', now()->subDays($days))->orWhereHas('cases')->orWhereHas('returns')->orWhereHas('complaints'))
             ->get();
 
         $dismissed = $includeDismissed ? collect() : DiscrepancyDismissal::query()
@@ -63,7 +69,45 @@ class DiscrepancyFinder
      */
     public function check(Order $order): array
     {
-        return [...$this->checkReturns($order), ...$this->checkCancellations($order)];
+        return [...$this->checkReturns($order), ...$this->checkComplaints($order), ...$this->checkCancellations($order)];
+    }
+
+    /**
+     * @return list<Discrepancy>
+     */
+    private function checkComplaints(Order $order): array
+    {
+        /** @var Collection<int, OrderComplaint> $complaints */
+        $complaints = $order->complaints;
+        $found = [];
+
+        if ($complaints->isEmpty()) {
+            if ($order->status?->group === StatusGroup::Reklamacja) {
+                $found[] = $this->make('reklamacja_tylko_w_baselinkerze', Severity::Ostrzezenie, $order,
+                    "W BaseLinkerze zamówienie ma status „{$order->status->name}”, a w panelu nie ma reklamacji. Dodaj ją, żeby pilnować terminu odpowiedzi.");
+            }
+
+            return $found;
+        }
+
+        $overdue = $complaints->first(fn (OrderComplaint $c) => $c->isResponseOverdue());
+        if ($overdue) {
+            $found[] = $this->make('reklamacja_bez_odpowiedzi', Severity::Krytyczna, $order,
+                "Reklamacja „{$overdue->product_name}” zgłoszona {$overdue->reported_on->format('d.m.Y')} nie ma odpowiedzi. Termin minął {$overdue->responseDeadline()->format('d.m.Y')}. Brak odpowiedzi w 14 dni oznacza uznanie reklamacji.");
+        }
+
+        $inService = $complaints->first(fn (OrderComplaint $c) => $c->status->isOpen() && $c->isLongInService());
+        if ($inService) {
+            $found[] = $this->make('reklamacja_dlugo_w_serwisie', Severity::Ostrzezenie, $order,
+                "„{$inService->product_name}” jest w serwisie {$inService->service_name} od {$inService->service_sent_on->format('d.m.Y')}. Zapytaj serwis o termin.");
+        }
+
+        if ($order->returns->isEmpty() && $complaints->contains(fn (OrderComplaint $c) => $c->resolution === ComplaintResolution::ZwrotPieniedzy)) {
+            $found[] = $this->make('reklamacja_zwrot_bez_zwrotu', Severity::Ostrzezenie, $order,
+                'Reklamacja zakończyła się zwrotem pieniędzy, a w panelu nie ma zwrotu. Dodaj zwrot, żeby było widać kwotę i dokumenty.');
+        }
+
+        return $found;
     }
 
     /**

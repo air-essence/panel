@@ -45,7 +45,7 @@ class OrderController extends Controller
 
     public function show(Order $order, DiscrepancyFinder $finder): View
     {
-        $order->load(['salesChannel.company', 'status', 'items', 'cases', 'returns']);
+        $order->load(['salesChannel.company', 'status', 'items', 'cases', 'returns', 'complaints']);
 
         return view('orders.show', ['order' => $order, 'discrepancies' => $finder->check($order)]);
     }

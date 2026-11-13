@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiscrepancyController;
 use App\Http\Controllers\NotificationStateController;
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
         ->parameters(['anulacje' => 'cancellation'])->names('cancellations');
     Route::resource('zwroty', ReturnController::class)->except(['destroy'])
         ->parameters(['zwroty' => 'return'])->names('returns');
+    Route::resource('reklamacje', ComplaintController::class)->except(['destroy'])
+        ->parameters(['reklamacje' => 'complaint'])->names('complaints');
 
     // Słowniki: podgląd dla wszystkich zalogowanych, zmiany tylko dla administratora.
     Route::get('/spolki', [CompanyController::class, 'index'])->name('companies.index');
@@ -39,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/statusy', [OrderStatusController::class, 'index'])->name('statuses.index');
 
     Route::middleware('role:admin')->group(function () {
+        Route::delete('/reklamacje/{complaint}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
         Route::delete('/zwroty/{return}', [ReturnController::class, 'destroy'])->name('returns.destroy');
         Route::delete('/anulacje/{cancellation}', [CancellationController::class, 'destroy'])->name('cancellations.destroy');
         Route::resource('spolki', CompanyController::class)->except(['index', 'show'])
