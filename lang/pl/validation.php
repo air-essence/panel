@@ -3,6 +3,7 @@
 // Polskie komunikaty walidacji dla reguł używanych w panelu. Brakujące reguły spadają do lang/en.
 return [
     'required' => 'Pole :attribute jest wymagane.',
+    'regex' => 'Pole :attribute ma nieprawidłowy format.',
     'string' => 'Pole :attribute musi być tekstem.',
     'email' => 'Pole :attribute musi być poprawnym adresem e-mail.',
     'integer' => 'Pole :attribute musi być liczbą całkowitą.',
@@ -41,9 +42,21 @@ return [
         'refunded_on' => 'data zwrotu',
         'shipment_hold' => 'przesyłka',
         'assigned_to' => 'osoba prowadząca',
+        'kind' => 'rodzaj zwrotu',
+        'goods_status' => 'towar',
+        'received_on' => 'data otrzymania towaru',
+        'goods_location' => 'lokalizacja towaru',
+        'return_tracking_number' => 'numer przesyłki zwrotnej',
+        'amount' => 'kwota zwrotu',
+        'refund_method' => 'metoda zwrotu',
+        'refund_account' => 'numer konta',
+        'sale_document' => 'dokument sprzedaży',
+        'sale_document_number' => 'numer dokumentu sprzedaży',
+        'correction_document_number' => 'numer korekty / PZ',
     ],
     'values' => [
         'reason' => ['inny' => 'Inny'],
         'refund_status' => ['zwrocono' => 'Zwrócono', 'nie_dotyczy' => 'Nie dotyczy'],
+        'refund_method' => ['przelew' => 'Przelew na konto klienta'],
     ],
 ];

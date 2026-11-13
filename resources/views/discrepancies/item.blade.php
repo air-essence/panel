@@ -1,11 +1,12 @@
 @php($case = $d->order->cases->first())
+@php($return = in_array($d->rule, ['zwrot_po_terminie', 'zwrot_wiekszy_niz_wplata', 'pieniadze_bez_towaru'], true) ? $d->order->returns->first() : null)
 <div class="issue issue-{{ $d->severity->value }}">
     <div>
         <span class="badge {{ $d->severity === \App\Enums\Severity::Krytyczna ? 'badge-danger' : 'badge-warn' }}">{{ $d->severity->label() }}</span>
         <strong>{{ \App\Services\Discrepancies\DiscrepancyFinder::RULES[$d->rule] }}</strong>
         · zamówienie <a href="{{ route('orders.show', $d->order) }}">{{ $d->order->baselinker_order_id }}</a>
         <span class="muted">{{ $d->order->customer_name }}@if ($d->order->salesChannel) · {{ $d->order->salesChannel->name }}@endif</span>
-        @if ($case) · <a href="{{ route('cancellations.show', $case) }}">anulacja nr {{ $case->id }}</a>@endif
+        @if ($return) · <a href="{{ route('returns.show', $return) }}">zwrot nr {{ $return->id }}</a>@elseif ($case) · <a href="{{ route('cancellations.show', $case) }}">anulacja nr {{ $case->id }}</a>@endif
     </div>
     <div>{{ $d->message }}</div>
     @if (empty($compact))

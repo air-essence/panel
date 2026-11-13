@@ -25,15 +25,22 @@
 </div>
 <h2>Sprawy</h2>
 @php($openCancellation = $order->cases->first(fn ($c) => $c->type === \App\Models\OrderCase::TYPE_CANCELLATION && $c->status->isOpen()))
-@if (! $openCancellation)<p><a class="btn btn-primary" href="{{ route('cancellations.create', ['zamowienie' => $order->id]) }}">Zgłoś anulację</a></p>@endif
+<p class="row-actions">
+    @if (! $openCancellation)<a class="btn btn-primary" href="{{ route('cancellations.create', ['zamowienie' => $order->id]) }}">Zgłoś anulację</a>@endif
+    <a class="btn" href="{{ route('returns.create', ['zamowienie' => $order->id]) }}">Dodaj zwrot</a>
+</p>
 <table>
     <thead><tr><th>Nr</th><th>Typ</th><th>Status</th><th>Data</th></tr></thead>
     <tbody>
-    @forelse ($order->cases as $case)
+    @foreach ($order->cases as $case)
         <tr><td><a href="{{ route('cancellations.show', $case) }}">{{ $case->id }}</a></td><td>Anulacja</td><td>{{ $case->status->label() }}</td><td>{{ $case->requested_on->format('d.m.Y') }}</td></tr>
-    @empty
+    @endforeach
+    @foreach ($order->returns as $return)
+        <tr><td><a href="{{ route('returns.show', $return) }}">{{ $return->id }}</a></td><td>Zwrot · {{ $return->kind->label() }}</td><td>{{ $return->status->label() }}</td><td>{{ $return->requested_on->format('d.m.Y') }}</td></tr>
+    @endforeach
+    @if ($order->cases->isEmpty() && $order->returns->isEmpty())
         <tr><td colspan="4" class="muted">Brak spraw do tego zamówienia.</td></tr>
-    @endforelse
+    @endif
     </tbody>
 </table>
 

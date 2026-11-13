@@ -57,6 +57,7 @@
         <a href="{{ route('discrepancies.index') }}">Do wyjaśnienia <span id="nav-discrepancies" class="badge badge-danger" hidden></span></a>
         <a href="{{ route('orders.index') }}">Zamówienia</a>
         <a href="{{ route('cancellations.index') }}">Anulacje</a>
+        <a href="{{ route('returns.index') }}">Zwroty</a>
         <a href="{{ route('companies.index') }}">Spółki</a>
         <a href="{{ route('channels.index') }}">Kanały sprzedaży</a>
         <a href="{{ route('statuses.index') }}">Statusy</a>

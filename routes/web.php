@@ -8,6 +8,7 @@ use App\Http\Controllers\DiscrepancyController;
 use App\Http\Controllers\NotificationStateController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderStatusController;
+use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\SalesChannelController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,8 @@ Route::middleware('auth')->group(function () {
     // Anulacje: każdy zalogowany zakłada i edytuje, usuwa tylko administrator.
     Route::resource('anulacje', CancellationController::class)->except(['destroy'])
         ->parameters(['anulacje' => 'cancellation'])->names('cancellations');
+    Route::resource('zwroty', ReturnController::class)->except(['destroy'])
+        ->parameters(['zwroty' => 'return'])->names('returns');
 
     // Słowniki: podgląd dla wszystkich zalogowanych, zmiany tylko dla administratora.
     Route::get('/spolki', [CompanyController::class, 'index'])->name('companies.index');
@@ -36,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/statusy', [OrderStatusController::class, 'index'])->name('statuses.index');
 
     Route::middleware('role:admin')->group(function () {
+        Route::delete('/zwroty/{return}', [ReturnController::class, 'destroy'])->name('returns.destroy');
         Route::delete('/anulacje/{cancellation}', [CancellationController::class, 'destroy'])->name('cancellations.destroy');
         Route::resource('spolki', CompanyController::class)->except(['index', 'show'])
             ->parameters(['spolki' => 'company'])->names('companies');
