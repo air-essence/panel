@@ -22,6 +22,7 @@
     <div class="card stat"><span class="muted">Zamówienia w panelu</span><strong><a href="{{ route('orders.index') }}">{{ $orders }}</a></strong></div>
     <div class="card stat"><span class="muted">Otwarte anulacje</span><strong><a href="{{ route('cancellations.index') }}">{{ $openCancellations }}</a></strong></div>
     <div class="card stat"><span class="muted">Otwarte zwroty</span><strong><a href="{{ route('returns.index') }}">{{ $openReturns }}</a></strong></div>
+    <div class="card stat"><span class="muted">Otwarte reklamacje</span><strong><a href="{{ route('complaints.index') }}">{{ $openComplaints }}</a></strong></div>
     <div class="card stat"><span class="muted">Zamówienia bez kanału</span><strong>{{ $ordersWithoutChannel }}</strong></div>
     <div class="card stat"><span class="muted">Spółki</span><strong>{{ $companies }}</strong></div>
     <div class="card stat"><span class="muted">Kanały sprzedaży</span><strong>{{ $channels }}</strong></div>

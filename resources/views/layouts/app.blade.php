@@ -7,6 +7,7 @@
     <style>
         :root { --bg:#f6f7f9; --card:#fff; --ink:#1f2328; --muted:#636c76; --line:#d8dee4; --accent:#1f6feb; --danger:#cf222e; --ok:#1a7f37; }
         * { box-sizing: border-box; }
+        [hidden] { display:none !important; }
         body { margin:0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--ink); }
         header { background:#24292f; color:#fff; padding:10px 20px; display:flex; gap:20px; align-items:center; flex-wrap:wrap; }
         header a { color:#fff; text-decoration:none; }
@@ -58,6 +59,7 @@
         <a href="{{ route('orders.index') }}">Zamówienia</a>
         <a href="{{ route('cancellations.index') }}">Anulacje</a>
         <a href="{{ route('returns.index') }}">Zwroty</a>
+        <a href="{{ route('complaints.index') }}">Reklamacje</a>
         <a href="{{ route('companies.index') }}">Spółki</a>
         <a href="{{ route('channels.index') }}">Kanały sprzedaży</a>
         <a href="{{ route('statuses.index') }}">Statusy</a>
