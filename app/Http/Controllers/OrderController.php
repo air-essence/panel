@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\StatusGroup;
 use App\Models\Order;
 use App\Models\SalesChannel;
+use App\Services\Discrepancies\DiscrepancyFinder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -42,8 +43,10 @@ class OrderController extends Controller
         ]);
     }
 
-    public function show(Order $order): View
+    public function show(Order $order, DiscrepancyFinder $finder): View
     {
-        return view('orders.show', ['order' => $order->load(['salesChannel.company', 'status', 'items', 'cases'])]);
+        $order->load(['salesChannel.company', 'status', 'items', 'cases']);
+
+        return view('orders.show', ['order' => $order, 'discrepancies' => $finder->check($order)]);
     }
 }

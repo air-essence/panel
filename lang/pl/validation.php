@@ -29,6 +29,7 @@ return [
         'group' => 'grupa',
         'baselinker_status_id' => 'ID w BaseLinkerze',
         'notes' => 'uwagi',
+        'note' => 'wyjaśnienie',
         'role' => 'rola',
         'order_number' => 'numer zamówienia',
         'status' => 'status sprawy',

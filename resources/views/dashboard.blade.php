@@ -38,7 +38,12 @@
 </div>
 @endif
 <div class="card">
-    <h2 style="margin-top:0">Do wyjaśnienia</h2>
-    <p class="muted">Tu pojawią się rozbieżności z BaseLinkerem, gdy dodamy reguły rozbieżności (krok 5 planu MVP).</p>
+    <h2 style="margin-top:0">Do wyjaśnienia @if ($discrepancyCount)<span class="badge badge-danger">{{ $discrepancyCount }}</span>@endif</h2>
+    @forelse ($discrepancies as $d)
+        @include('discrepancies.item', ['d' => $d, 'compact' => true])
+    @empty
+        <p class="muted">Brak rozbieżności między panelem a BaseLinkerem.</p>
+    @endforelse
+    @if ($discrepancyCount > $discrepancies->count())<p><a class="btn" href="{{ route('discrepancies.index') }}">Pokaż wszystkie ({{ $discrepancyCount }})</a></p>@endif
 </div>
 @endsection

@@ -3,6 +3,9 @@
 @section('content')
 <p><a href="{{ route('orders.index') }}">← Zamówienia</a></p>
 <h1>Zamówienie {{ $order->baselinker_order_id }}</h1>
+@foreach ($discrepancies as $d)
+    @include('discrepancies.item', ['d' => $d])
+@endforeach
 <div class="card">
     <dl class="details">
         <dt>Kanał</dt><dd>{!! $order->salesChannel ? e($order->salesChannel->name) : '<span class="badge badge-warn">bez kanału</span> <span class="muted">'.e($order->baselinker_source).'</span>' !!}</dd>

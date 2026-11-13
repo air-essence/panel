@@ -30,6 +30,11 @@
         .badge-warn { background:#fff8c5; }
         .badge-danger { background:#ffebe9; color:var(--danger); }
         .badge-ok { background:#dafbe1; }
+        .issue { border-left:4px solid var(--line); padding:8px 12px; margin:8px 0; background:var(--card); }
+        .issue-krytyczna { border-left-color:var(--danger); }
+        .issue-ostrzezenie { border-left-color:#d4a72c; }
+        .issue form { margin:6px 0 0; display:flex; gap:6px; flex-wrap:wrap; }
+        .issue input[type=text] { max-width:360px; }
         .filters { display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin-bottom:16px; }
         .filters input, .filters select { width:auto; min-width:180px; }
         .table-wrap { overflow-x:auto; }
@@ -49,6 +54,7 @@
     <strong><a href="{{ route('dashboard') }}">Panel zamówień</a></strong>
     <nav>
         <a href="{{ route('dashboard') }}">Pulpit</a>
+        <a href="{{ route('discrepancies.index') }}">Do wyjaśnienia</a>
         <a href="{{ route('orders.index') }}">Zamówienia</a>
         <a href="{{ route('cancellations.index') }}">Anulacje</a>
         <a href="{{ route('companies.index') }}">Spółki</a>
