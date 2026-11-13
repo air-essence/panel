@@ -40,6 +40,14 @@ Automatyczne uruchamianie: na serwerze dodaj do crona `* * * * * cd /ścieżka/d
 - PHP 8.3 lub nowszy z rozszerzeniami: pdo_sqlite (lub pdo_mysql / pdo_pgsql), mbstring, openssl, xml
 - Composer 2
 
+## Wersja testowa na Windowsie
+
+1. Zainstaluj [Laravel Herd](https://herd.laravel.com/windows) (PHP i Composer).
+2. Pobierz repozytorium jako ZIP i rozpakuj.
+3. Kliknij dwa razy `uruchom-demo.bat`. Skrypt pobierze biblioteki, wgra fikcyjne dane (`DemoSeeder`) i otworzy http://localhost:8000.
+
+Konta: `admin@demo.pl`, `kierownik@demo.pl`, `pracownik@demo.pl`, hasło `demo-panel`. Dane przykładowe wywołują każdą regułę z „Do wyjaśnienia”. `DemoSeeder` odmawia działania przy `APP_ENV=production`.
+
 ## Uruchomienie lokalne
 
 ```bash
