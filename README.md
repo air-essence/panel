@@ -14,7 +14,12 @@ Koncepcja i plan MVP: dokument „Koncepcja narzędzia do śledzenia zamówień 
 - synchronizacja z BaseLinkerem co 5 minut, tylko do odczytu: statusy, źródła zamówień, zamówienia z produktami (EAN), płatnością i numerem przesyłki,
 - lista zamówień z wyszukiwaniem i filtrami oraz karta zamówienia,
 - anulacje: wymagane pola (powód, data, co z przesyłką, zwrot pieniędzy z kwotą i datą), jedna otwarta anulacja na zamówienie, blokada zamknięcia przed zwrotem pieniędzy, historia zmian oraz ostrzeżenia, gdy sprawa nie zgadza się z danymi z BaseLinkera,
-- „Do wyjaśnienia”: rozbieżności między anulacjami w panelu a statusami w BaseLinkerze (anulowane z numerem przesyłki, zwrot pieniędzy przy zamówieniu w realizacji, anulacja tylko po jednej stronie). Rozbieżność można oznaczyć jako wyjaśnioną z obowiązkowym opisem.
+- „Do wyjaśnienia”: rozbieżności między anulacjami w panelu a statusami w BaseLinkerze (anulowane z numerem przesyłki, zwrot pieniędzy przy zamówieniu w realizacji, anulacja tylko po jednej stronie). Rozbieżność można oznaczyć jako wyjaśnioną z obowiązkowym opisem,
+- powiadomienia: licznik rozbieżności w menu i w tytule karty (odświeżany co minutę) oraz powiadomienia systemowe o nowych rozbieżnościach krytycznych i błędach synchronizacji.
+
+## Powiadomienia
+
+Licznik działa zawsze. Powiadomienia systemowe przeglądarka pokazuje tylko po kliknięciu „Włącz powiadomienia” i tylko gdy panel jest otwarty przez HTTPS albo pod `localhost`. Na serwerze firmowym trzeba więc ustawić HTTPS (np. certyfikat wewnętrzny lub Caddy). Karta z panelem musi być otwarta, choćby w tle.
 
 ## BaseLinker
 
@@ -61,5 +66,4 @@ Na serwerze firmowym zamiast SQLite można ustawić MySQL lub PostgreSQL w pliku
 
 ## Następne kroki (plan MVP)
 
-6. Powiadomienia w przeglądarce o nowych rozbieżnościach krytycznych.
 7. Instalacja na serwerze firmowym i kopie zapasowe.

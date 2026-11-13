@@ -54,13 +54,14 @@
     <strong><a href="{{ route('dashboard') }}">Panel zamówień</a></strong>
     <nav>
         <a href="{{ route('dashboard') }}">Pulpit</a>
-        <a href="{{ route('discrepancies.index') }}">Do wyjaśnienia</a>
+        <a href="{{ route('discrepancies.index') }}">Do wyjaśnienia <span id="nav-discrepancies" class="badge badge-danger" hidden></span></a>
         <a href="{{ route('orders.index') }}">Zamówienia</a>
         <a href="{{ route('cancellations.index') }}">Anulacje</a>
         <a href="{{ route('companies.index') }}">Spółki</a>
         <a href="{{ route('channels.index') }}">Kanały sprzedaży</a>
         <a href="{{ route('statuses.index') }}">Statusy</a>
     </nav>
+    <button id="enable-notifications" class="btn-link" type="button" hidden>Włącz powiadomienia</button>
     <span class="muted" style="color:#c9d1d9">{{ auth()->user()->name }} · {{ auth()->user()->role->label() }}</span>
     <form method="post" action="{{ route('logout') }}">@csrf<button class="btn-link" type="submit">Wyloguj</button></form>
 </header>
@@ -71,5 +72,65 @@
     @endif
     @yield('content')
 </main>
+@auth
+<script>
+// Co minutę sprawdzamy rozbieżności. Licznik w menu i w tytule karty działa zawsze,
+// powiadomienia systemowe tylko po zgodzie użytkownika i przez HTTPS albo localhost.
+(function () {
+    var stateUrl = @json(route('notifications.state', absolute: false));
+    var baseTitle = document.title;
+    var badge = document.getElementById('nav-discrepancies');
+    var button = document.getElementById('enable-notifications');
+    var storageKey = 'panel-powiadomienia-widziane';
+    var canNotify = 'Notification' in window && window.isSecureContext;
+
+    function seen() {
+        try { return JSON.parse(localStorage.getItem(storageKey)) || null; } catch (e) { return null; }
+    }
+    function remember(keys) {
+        try { localStorage.setItem(storageKey, JSON.stringify(keys)); } catch (e) {}
+    }
+    function notify(item) {
+        if (!canNotify || Notification.permission !== 'granted') return;
+        var n = new Notification(item.title, { body: item.message, tag: item.key });
+        n.onclick = function () { window.focus(); window.location.href = item.url; };
+    }
+    function refreshButton() {
+        button.hidden = !(canNotify && Notification.permission === 'default');
+    }
+
+    function check() {
+        fetch(stateUrl, { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' })
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+            .then(function (state) {
+                var critical = state.critical.length;
+                badge.textContent = state.total;
+                badge.hidden = state.total === 0;
+                document.title = (critical ? '(' + critical + ') ' : '') + baseTitle;
+
+                var items = state.critical.slice();
+                if (state.sync_error) items.push(state.sync_error);
+                var keys = items.map(function (i) { return i.key; });
+                var previous = seen();
+
+                // Przy pierwszym uruchomieniu tylko zapamiętujemy stan, żeby nie zasypać użytkownika.
+                if (previous !== null) {
+                    items.filter(function (i) { return previous.indexOf(i.key) === -1; }).slice(0, 5).forEach(notify);
+                }
+                remember(keys);
+            })
+            .catch(function () {});
+    }
+
+    button.addEventListener('click', function () {
+        Notification.requestPermission().then(refreshButton);
+    });
+
+    refreshButton();
+    check();
+    setInterval(check, 60000);
+})();
+</script>
+@endauth
 </body>
 </html>
