@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BaselinkerSource;
 use App\Models\Company;
 use App\Models\Order;
+use App\Models\OrderCase;
 use App\Models\OrderStatus;
 use App\Models\SalesChannel;
 use App\Models\SyncRun;
@@ -21,6 +22,7 @@ class DashboardController extends Controller
             'statuses' => OrderStatus::count(),
             'unmappedStatuses' => OrderStatus::whereNull('baselinker_status_id')->count(),
             'orders' => Order::count(),
+            'openCancellations' => OrderCase::cancellations()->open()->count(),
             'ordersWithoutChannel' => Order::whereNull('sales_channel_id')->count(),
             'unassignedSources' => BaselinkerSource::doesntHave('salesChannel')->orderBy('type')->orderBy('name')->get(),
             'lastSync' => SyncRun::latestFor(OrderSync::SOURCE),

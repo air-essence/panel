@@ -44,6 +44,6 @@ class OrderController extends Controller
 
     public function show(Order $order): View
     {
-        return view('orders.show', ['order' => $order->load(['salesChannel.company', 'status', 'items'])]);
+        return view('orders.show', ['order' => $order->load(['salesChannel.company', 'status', 'items', 'cases'])]);
     }
 }

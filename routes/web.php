@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
@@ -19,12 +20,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/zamowienia', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/zamowienia/{order}', [OrderController::class, 'show'])->name('orders.show');
 
+    // Anulacje: każdy zalogowany zakłada i edytuje, usuwa tylko administrator.
+    Route::resource('anulacje', CancellationController::class)->except(['destroy'])
+        ->parameters(['anulacje' => 'cancellation'])->names('cancellations');
+
     // Słowniki: podgląd dla wszystkich zalogowanych, zmiany tylko dla administratora.
     Route::get('/spolki', [CompanyController::class, 'index'])->name('companies.index');
     Route::get('/kanaly', [SalesChannelController::class, 'index'])->name('channels.index');
     Route::get('/statusy', [OrderStatusController::class, 'index'])->name('statuses.index');
 
     Route::middleware('role:admin')->group(function () {
+        Route::delete('/anulacje/{cancellation}', [CancellationController::class, 'destroy'])->name('cancellations.destroy');
         Route::resource('spolki', CompanyController::class)->except(['index', 'show'])
             ->parameters(['spolki' => 'company'])->names('companies');
         Route::resource('kanaly', SalesChannelController::class)->except(['index', 'show'])
