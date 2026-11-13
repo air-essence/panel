@@ -10,7 +10,21 @@ Koncepcja i plan MVP: dokument „Koncepcja narzędzia do śledzenia zamówień 
 - logowanie (blokada po 5 nieudanych próbach, nieaktywne konta nie mogą się zalogować),
 - role: pracownik, kierownik, administrator,
 - słowniki: spółki (Swing, Trusted, Roynal), kanały sprzedaży (10 sklepów i marketplace'ów), statusy zamówień z grupami do reguł rozbieżności,
-- zmiany w słownikach tylko dla administratora, podgląd dla wszystkich.
+- zmiany w słownikach tylko dla administratora, podgląd dla wszystkich,
+- synchronizacja z BaseLinkerem co 5 minut, tylko do odczytu: statusy, źródła zamówień, zamówienia z produktami (EAN), płatnością i numerem przesyłki,
+- lista zamówień z wyszukiwaniem i filtrami oraz karta zamówienia.
+
+## BaseLinker
+
+1. W BaseLinkerze: Moje konto → API → wygeneruj token.
+2. Wpisz go w pliku `.env` na serwerze: `BASELINKER_TOKEN=...`. Nigdy nie wklejaj tokenu do repozytorium ani do czatu.
+3. Uruchom pierwszy raz ręcznie: `php artisan panel:synchronizuj-baselinker`.
+4. Na pulpicie pojawią się źródła bez kanału. Przypisz je w „Kanały sprzedaży”, a zamówienia połączą się z kanałem i spółką.
+5. Statusy z BaseLinkera łączą się z istniejącymi po nazwie. Nowe dostają grupę „Do ustalenia” do uzupełnienia.
+
+Panel używa wyłącznie metod `get*` API (blokada w `App\Services\BaseLinker\Client`). Każda synchronizacja odświeża zamówienia z ostatnich `BASELINKER_SYNC_DAYS` dni (domyślnie 30).
+
+Automatyczne uruchamianie: na serwerze dodaj do crona `* * * * * cd /ścieżka/do/panelu && php artisan schedule:run >> /dev/null 2>&1`.
 
 ## Wymagania
 
@@ -39,11 +53,11 @@ Na serwerze firmowym zamiast SQLite można ustawić MySQL lub PostgreSQL w pliku
 | --- | --- |
 | `php artisan panel:dodaj-uzytkownika email --role=pracownik` | dodaje konto (hasło podajesz w konsoli, min. 10 znaków) |
 | `php artisan db:seed --class=DictionarySeeder` | dodaje brakujące wpisy słowników, nie nadpisuje zmian z panelu |
+| `php artisan panel:synchronizuj-baselinker [--dni=7]` | pobiera dane z BaseLinkera |
 | `php artisan test` | uruchamia testy |
 | `./vendor/bin/pint` | formatuje kod |
 
 ## Następne kroki (plan MVP)
 
-3. Pobieranie zamówień z BaseLinkera tylko do odczytu (token API w `.env`, nigdy w repozytorium).
 4. Moduł anulacji z wymaganymi polami i historią zmian.
 5. Reguły rozbieżności i pulpit „Do wyjaśnienia”.

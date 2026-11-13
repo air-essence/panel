@@ -28,6 +28,15 @@
         .muted { color:var(--muted); }
         .badge { display:inline-block; padding:1px 8px; border-radius:10px; font-size:12px; background:#eaeef2; }
         .badge-warn { background:#fff8c5; }
+        .badge-danger { background:#ffebe9; color:var(--danger); }
+        .badge-ok { background:#dafbe1; }
+        .filters { display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin-bottom:16px; }
+        .filters input, .filters select { width:auto; min-width:180px; }
+        .table-wrap { overflow-x:auto; }
+        .pagination { display:flex; gap:12px; margin:16px 0; }
+        dl.details { display:grid; grid-template-columns:max-content 1fr; gap:6px 20px; margin:0; }
+        dl.details dt { color:var(--muted); }
+        dl.details dd { margin:0; }
         .row-actions { display:flex; gap:8px; }
         .row-actions form { margin:0; }
         .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; }
@@ -40,6 +49,7 @@
     <strong><a href="{{ route('dashboard') }}">Panel zamówień</a></strong>
     <nav>
         <a href="{{ route('dashboard') }}">Pulpit</a>
+        <a href="{{ route('orders.index') }}">Zamówienia</a>
         <a href="{{ route('companies.index') }}">Spółki</a>
         <a href="{{ route('channels.index') }}">Kanały sprzedaży</a>
         <a href="{{ route('statuses.index') }}">Statusy</a>

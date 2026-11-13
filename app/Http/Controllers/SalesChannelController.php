@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ChannelType;
+use App\Models\BaselinkerSource;
 use App\Models\Company;
 use App\Models\SalesChannel;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,7 @@ class SalesChannelController extends Controller
 
     public function create(): View
     {
-        return view('channels.form', ['channel' => new SalesChannel(['is_active' => true]), 'companies' => Company::orderBy('name')->get()]);
+        return $this->form(new SalesChannel(['is_active' => true]));
     }
 
     public function store(Request $request): RedirectResponse
@@ -31,7 +32,7 @@ class SalesChannelController extends Controller
 
     public function edit(SalesChannel $channel): View
     {
-        return view('channels.form', ['channel' => $channel, 'companies' => Company::orderBy('name')->get()]);
+        return $this->form($channel);
     }
 
     public function update(Request $request, SalesChannel $channel): RedirectResponse
@@ -46,6 +47,19 @@ class SalesChannelController extends Controller
         $channel->delete();
 
         return redirect()->route('channels.index')->with('status', 'Usunięto kanał sprzedaży.');
+    }
+
+    private function form(SalesChannel $channel): View
+    {
+        return view('channels.form', [
+            'channel' => $channel,
+            'companies' => Company::orderBy('name')->get(),
+            // Źródła wolne albo przypisane do edytowanego kanału.
+            'sources' => BaselinkerSource::where(fn ($q) => $q
+                ->doesntHave('salesChannel')
+                ->orWhere('key', $channel->baselinker_source ?? ''))
+                ->orderBy('type')->orderBy('name')->get(),
+        ]);
     }
 
     private function validated(Request $request, ?SalesChannel $channel = null): array

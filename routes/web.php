@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderStatusController;
 use App\Http\Controllers\SalesChannelController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/wyloguj', [LoginController::class, 'logout'])->name('logout');
     Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('/zamowienia', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/zamowienia/{order}', [OrderController::class, 'show'])->name('orders.show');
 
     // Słowniki: podgląd dla wszystkich zalogowanych, zmiany tylko dla administratora.
     Route::get('/spolki', [CompanyController::class, 'index'])->name('companies.index');
