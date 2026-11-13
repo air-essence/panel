@@ -44,6 +44,11 @@ class Order extends Model
         return $this->hasMany(OrderCase::class)->latest();
     }
 
+    public function returns(): HasMany
+    {
+        return $this->hasMany(OrderReturn::class)->latest();
+    }
+
     public function isPaid(): bool
     {
         $total = (int) round((float) $this->total * 100);

@@ -6,13 +6,11 @@ use App\Enums\CancellationReason;
 use App\Enums\CaseStatus;
 use App\Enums\RefundStatus;
 use App\Enums\ShipmentHold;
+use App\Http\Controllers\Concerns\TracksChanges;
 use App\Models\Order;
 use App\Models\OrderCase;
-use App\Models\User;
-use BackedEnum;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -20,6 +18,8 @@ use Illuminate\View\View;
 
 class CancellationController extends Controller
 {
+    use TracksChanges;
+
     public function index(Request $request): View
     {
         $filters = $request->validate([
@@ -51,7 +51,7 @@ class CancellationController extends Controller
         return view('cancellations.form', [
             'case' => new OrderCase(['requested_on' => now(), 'assigned_to' => $request->user()->id]),
             'order' => $order,
-            'users' => $this->users(),
+            'users' => $this->activeUsers(),
         ]);
     }
 
@@ -87,7 +87,7 @@ class CancellationController extends Controller
         return view('cancellations.form', [
             'case' => $cancellation,
             'order' => $cancellation->order,
-            'users' => $this->users(),
+            'users' => $this->activeUsers(),
         ]);
     }
 
@@ -100,7 +100,7 @@ class CancellationController extends Controller
             $cancellation->closed_at = $cancellation->status === CaseStatus::Zakonczona ? now() : null;
         }
 
-        $changes = $this->changes($cancellation);
+        $changes = $this->changes($cancellation, OrderCase::TRACKED);
 
         if ($changes === []) {
             return redirect()->route('cancellations.show', $cancellation)->with('status', 'Brak zmian do zapisania.');
@@ -184,45 +184,5 @@ class CancellationController extends Controller
         }
 
         return $data;
-    }
-
-    /**
-     * @return array<string, array{0: ?string, 1: ?string}>
-     */
-    private function changes(OrderCase $case): array
-    {
-        $changes = [];
-
-        foreach (array_keys(OrderCase::TRACKED) as $field) {
-            if (! $case->isDirty($field)) {
-                continue;
-            }
-
-            $old = $this->display($field, $case->getOriginal($field));
-            $new = $this->display($field, $case->getAttribute($field));
-
-            if ($old !== $new) {
-                $changes[$field] = [$old, $new];
-            }
-        }
-
-        return $changes;
-    }
-
-    private function display(string $field, mixed $value): ?string
-    {
-        return match (true) {
-            $value === null || $value === '' => null,
-            $value instanceof BackedEnum && method_exists($value, 'label') => $value->label(),
-            $value instanceof Carbon => $value->format('d.m.Y'),
-            $field === 'assigned_to' => User::find($value)?->name,
-            $field === 'refund_amount' => number_format((float) $value, 2, ',', ' '),
-            default => (string) $value,
-        };
-    }
-
-    private function users()
-    {
-        return User::where('is_active', true)->orderBy('name')->get(['id', 'name']);
     }
 }
